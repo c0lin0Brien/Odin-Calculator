@@ -21,6 +21,10 @@ body {
     border-width: 2px;
     flex: 1;
     display: flex;
+    justify-content: right;
+    min-height: 25px;
+    padding-right: 5px;
+    padding-top: 3.5px;
 }
 .buttons {
     display: flex;

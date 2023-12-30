@@ -2,6 +2,8 @@ let val = [];
 let evaluation = [];
 operation = [];
 let second = false;
+let next = false;
+let repeat = [];
 function makeInput(value) {
     // Initialize the object
     let first = {};
@@ -28,6 +30,11 @@ function operate(expression) {
 // Numbers Onclick Function
 const display = document.querySelector(".display");
 function numPress(button) {
+    if (next) {
+        val = [];
+        evaluation = [];
+        next = false;
+    }
     if (!second) {
         val.push(button.value);
         let currentVal = Number(val.join(""));
@@ -52,21 +59,41 @@ function opPress(button) {
     if (button.value == "evaluate") {
         if (evaluation.length == 2) {
             evaluation.push(Number(val.join("")));
-            display.textContent = operate(evaluation);
-            evaluation = [operate(evaluation)];
-        } else {
-            console.log("Working on that");
+            let solution = operate(evaluation);
+            display.textContent = solution;
+            repeat = [solution, evaluation[1], evaluation[2]];
+            evaluation = [solution];
+            val = [solution];
+            next = true;
+            console.log(repeat);
+        } else if (next) {
+            console.log("repeat!");
+            let solution = operate(repeat);
+            display.textContent = solution;
+            repeat = [solution, repeat[1], repeat[2]];
+            evaluation = [solution];
+            val = [solution];
+            next = true;
+            console.log(repeat);
         }
     // Clear Button
     } else if (button.value == "clear") {
         val = [];
         evaluation = [];
         display.textContent = 0;
+    // Basic Operators
     } else {
+        next = false;
         button.style.color = "black";
         button.style.backgroundColor = "white";
         if (evaluation.length == 0) {
             evaluation.push(Number(val.join("")));
+        } else if (evaluation.length == 2) {
+            evaluation.push(Number(val.join("")));
+            let solution = operate(evaluation);
+            display.textContent = solution;
+            evaluation = [solution];
+            val = [solution];
         }
         operation = [];
         operation.push(button.value);
@@ -110,6 +137,10 @@ numrow.appendChild(zeroButton);
 // .
 let decButton = document.createElement("button");
 decButton.innerHTML = ".";
+decButton.value = ".";
+decButton.addEventListener("click", function() { 
+    numPress(decButton);
+});
 decButton.classList.add("numbutton");
 decButton.classList.add("button");
 decButton.style.flexBasis = "33.33%";

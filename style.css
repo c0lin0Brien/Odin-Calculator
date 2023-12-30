@@ -58,3 +58,10 @@ body {
 .operbutton {
     flex-basis: 50%;
 }
+.signature {
+    text-align: right;
+}
+.title {
+    font-size: 50px;
+    text-align: center;
+}

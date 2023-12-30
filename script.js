@@ -1,3 +1,7 @@
+let val = [];
+let evaluation = [];
+operation = [];
+let second = false;
 function makeInput(value) {
     // Initialize the object
     let first = {};
@@ -15,12 +19,6 @@ function makeInput(value) {
     first.divide = function(second) {
         return first.value / second;
     }
-    first.clear = function() {
-        first.value = 0;
-    }
-    first.evaluate = function() {
-        return first.value;
-    }
     return first;
 }
 // Operate Function
@@ -28,13 +26,52 @@ function operate(expression) {
     return makeInput(expression[0])[expression[1]](expression[2]);
 }
 // Numbers Onclick Function
-val = [];
 const display = document.querySelector(".display");
 function numPress(button) {
-    val.push(button.value);
-    let currentVal = val.join("");
-    display.textContent = currentVal;
-    console.log(currentVal);
+    if (!second) {
+        val.push(button.value);
+        let currentVal = Number(val.join(""));
+        display.textContent = currentVal;
+    } else {
+        val = [];
+        val.push(button.value);
+        evaluation.push(operation[0]);
+        let currentVal = Number(val.join(""));
+        display.textContent = currentVal;
+        second = false;
+    }
+}
+// Operators Onclick Function
+function opPress(button) {
+    let buttons = Array.from(document.querySelectorAll(".button"))
+    for (i=0; i < buttons.length; i++) {
+        buttons[i].style.color = "white";
+        buttons[i].style.backgroundColor = "black";
+    }
+    // Evaluate Button
+    if (button.value == "evaluate") {
+        if (evaluation.length == 2) {
+            evaluation.push(Number(val.join("")));
+            display.textContent = operate(evaluation);
+            evaluation = [operate(evaluation)];
+        } else {
+            console.log("Working on that");
+        }
+    // Clear Button
+    } else if (button.value == "clear") {
+        val = [];
+        evaluation = [];
+        display.textContent = 0;
+    } else {
+        button.style.color = "black";
+        button.style.backgroundColor = "white";
+        if (evaluation.length == 0) {
+            evaluation.push(Number(val.join("")));
+        }
+        operation = [];
+        operation.push(button.value);
+        second = true;
+    }
 
 }
 // Creating Number Buttons
@@ -92,7 +129,9 @@ for (i=0; i<3; i++) {
         operbutton.classList.add("button");
         operbutton.innerHTML = opvals.shift();
         operbutton.value = operations.shift();
-
+        operbutton.addEventListener("click", function() {
+            opPress(operbutton);
+        })
         operrow.appendChild(operbutton);
     }
     operators.appendChild(operrow);
